@@ -1,5 +1,6 @@
 import { benefits } from '../constants/index.js';
 import Heading from "../constants/Heading.jsx";
+import { SectionWrapper } from './hoc';
 
 const objectives = () => {
     return(
@@ -36,4 +37,4 @@ const objectives = () => {
     )
 }
 
-export default objectives;
+export default SectionWrapper(objectives, 'Objectives');

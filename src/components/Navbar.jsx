@@ -40,13 +40,21 @@ const Navbar = () => {
                 >
                     <img src={logo} alt="Logo" className='cursor-pointer' width={90} height={40} />
                 </Link>
-                <ul className='inline-block space-x-4 list-none mt-4 mb-5 mx-20 text-base text-n-1 pt-4 pb-0 '> {/* Added space-x-4 for horizontal spacing of list items */}
-                    <li className='inline-block hover:text-color-gold'>Home</li>
-                    <li className='inline-block hover:text-color-gold'>Our Objectives</li>
-                    <li className='inline-block hover:text-color-gold'></li>
-                    <li className='inline-block hover:text-color-gold'>Contact us</li>
-                    <li className='inline-block hover:text-color-gold'>
-                        <button className='btn transition-all duration-300 ease-in-out transform hover:bg-color-gold hover:scale-105'>
+                <ul className='inline-block space-x-4 list-none mt-4 mb-5 mx-20 text-base text-n-1 pt-4 pb-0 cursor-pointer '> {/* Added space-x-4 for horizontal spacing of list items */}
+                    <li
+                        className='inline-block hover:text-purple-700'
+                        key={"About"}
+                    ><a className='no-underline text-n-1 hover:text-purple-700' href="#About">About</a></li>
+                    <li
+                        className='inline-block hover:text-purple-700'
+                        key={"Objectives"}
+                    ><a className='no-underline text-n-1 hover:text-purple-700' href="#Objectives">Objectives</a></li>
+                    <li
+                        className='inline-block hover:text-purple-700'
+                        key={"czontact"}
+                    ><a className='no-underline text-n-1 hover:text-purple-700' href="#contact">Contact</a></li>
+                    <li className='inline-block hover:text-purple-700'>
+                        <button className='btn transition-all duration-300 ease-in-out transform hover:bg-purple-700 hover:text-white hover:scale-105'>
                             Register Now
                         </button>
                     </li>

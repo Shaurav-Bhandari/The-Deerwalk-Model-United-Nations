@@ -1,35 +1,41 @@
-import { FaFacebook } from "react-icons/fa";
-import { FaInstagramSquare } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
+import React from 'react';
+import { FaFacebook, FaInstagramSquare, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
     <div className="text-white bg-color-royal-blue">
-      <footer className="w-full flex items-center container my-2 mx-auto justify- border-t-2 border-t-[#797979] py-3">
-        <img src="" alt="" />
-        <img src="" alt="" />
-        <p className="mr-auto">Visit Our Socials</p>
-        <div className="flex basis-1/4 gap-2 my-3 ml-0 mr-auto">
-          <a href="">
-            <FaFacebook size={40} color="white" />
-          </a>
-          <a href="">
-            <FaInstagramSquare size={40} color="white" />
-          </a>
-          <a href="">
-            <FaLinkedin size={40} color="white" />
-          </a>
-        </div>
+      <footer className="container mx-auto px-4 py-6">
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between border-t-2 border-t-[#797979] pt-6">
+          <div className="mb-6 md:mb-0">
+            <img src="" alt="" className="mb-4" />
+            <img src="" alt="" />
+          </div>
+          
+          <div className="mb-6 md:mb-0 text-center md:text-left">
+            <p className="mb-2">Visit Our Socials:</p>
+            <div className="flex gap-4 justify-center md:justify-start">
+              <a href="" className="hover:opacity-80 transition-opacity">
+                <FaFacebook size={32} color='white'/>
+              </a>
+              <a href="" className="hover:opacity-80 transition-opacity">
+                <FaInstagramSquare size={32} color='white'/>
+              </a>
+              <a href="" className="hover:opacity-80 transition-opacity">
+                <FaLinkedin size={32} color='white'/>
+              </a>
+            </div>
+          </div>
 
-        <div className="flex basis-1/4 justify-end text-right">
-          <ul>
-            <li className="font-extrabold text-md">Event Summary</li>
-            <li>Mode: In-person</li>
-            <li>Venue: Deerwalk Complex</li>
-          </ul>
+          <div className="text-center md:text-right">
+            <h3 className="font-extrabold text-lg mb-2">Event Summary</h3>
+            <p>Mode: In-person</p>
+            <p>Venue: Deerwalk Complex</p>
+          </div>
         </div>
       </footer>
-      <p className="flex justify-center items-center">All Rights Reserved. © DWIT DeerExpress 2024</p>
+      <div className="border-t border-t-[#797979] py-4">
+        <p className="text-center text-sm">All Rights Reserved. © DWIT DeerExpress 2024</p>
+      </div>
     </div>
   );
 };
