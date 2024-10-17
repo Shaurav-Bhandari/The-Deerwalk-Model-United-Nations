@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaFacebook, FaInstagramSquare, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
@@ -11,7 +10,7 @@ const Footer = () => {
             <img src="" alt="" />
           </div>
           
-          <div className="mb-6 md:mb-0 text-center md:text-left">
+          <div className="mb-6 md:mb-0 mr-auto md:text-left">
             <p className="mb-2">Visit Our Socials:</p>
             <div className="flex gap-4 justify-center md:justify-start">
               <a href="" className="hover:opacity-80 transition-opacity">

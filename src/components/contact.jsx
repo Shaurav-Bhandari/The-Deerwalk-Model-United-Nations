@@ -1,4 +1,3 @@
-import React from 'react';
 import Heading from '../constants/Heading';
 import { IoIosMail } from "react-icons/io";
 import { IoLogoWhatsapp } from "react-icons/io";

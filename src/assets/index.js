@@ -7,6 +7,7 @@ import Leadership from './leadership.svg';
 import Excellence from './Excellence.svg';
 import success from './success.svg';
 import book from './book.svg';
+import register_bg from './register_bg.jpg';
 
 export {
     Logo,
@@ -17,5 +18,6 @@ export {
     Leadership,
     Excellence,
     success,
-    book
+    book,
+    register_bg
 };

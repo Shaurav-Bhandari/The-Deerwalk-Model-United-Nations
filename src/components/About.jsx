@@ -1,4 +1,3 @@
-import React from 'react';
 import Heading from "../constants/Heading.jsx";
 import { LiaUniversitySolid, LiaCalendarWeekSolid } from "react-icons/lia";
 import { FaPlay } from "react-icons/fa";

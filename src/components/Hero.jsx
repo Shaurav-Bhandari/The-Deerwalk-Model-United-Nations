@@ -1,4 +1,3 @@
-import React from 'react';
 import hero_img from '../assets/hero_img.jpg';
 import { FiArrowDown } from 'react-icons/fi';
 
