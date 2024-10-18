@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { register_bg } from '../assets';
-import { SectionWrapper } from './hoc';
 
 const FormInput = ({ label, type, value, onChange, name, placeholder, required }) => (
   <div className="mb-4 border border-b-slate-400 rounded-md p-3">
@@ -320,4 +319,4 @@ const Register = () => {
   );
 };
 
-export default SectionWrapper(Register, "Register");
+export default Register;

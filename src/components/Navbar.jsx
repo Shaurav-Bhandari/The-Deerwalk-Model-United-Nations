@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link } from "react-router-dom";
 import logo from '../assets/logo.svg';
+import Register  from './register';
 
 const Navbar = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const navigate = useNavigate(); // Use useNavigate hook
 
   useEffect(() => {
     const handleScroll = () => setScrollPosition(window.scrollY);
@@ -13,6 +13,7 @@ const Navbar = () => {
   }, []);
 
   const heroHeight = window.innerHeight;
+  const REGISTER_URL = `${window.location.origin}/register`;
 
   return (
     <div className="w-full fixed top-0 z-50 left-0 backdrop-blur-sm">
@@ -34,14 +35,15 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-          {/* Link to Register component using useNavigate */}
           <li className="transition-colors duration-200 ease-in-out">
-            <button
+            <a
+              href={REGISTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn bg-transparent text-n-1 hover:bg-purple-700 hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
-              onClick={() => navigate('/register')} // Trigger navigation using useNavigate
             >
               Register Now
-            </button>
+            </a>
           </li>
         </ul>
       </nav>
