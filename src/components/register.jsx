@@ -4,7 +4,7 @@ import { register_bg } from '../assets';
 import { SectionWrapper } from './hoc';
 
 const FormInput = ({ label, type, value, onChange, name, placeholder, required }) => (
-  <div className="mb-4">
+  <div className="mb-4 border border-b-slate-400 rounded-md p-3">
     <label className="block text-gray-700 mb-2" htmlFor={name}>{label}</label>
     <input
       id={name}
@@ -30,7 +30,7 @@ FormInput.propTypes = {
 };
 
 const RadioGroup = ({ label, options, value, onChange, name, required }) => (
-  <div className="mb-4">
+  <div className="mb-4 border border-b-slate-400 rounded-md p-3">
     <label className="block text-gray-700 mb-2">{label}</label>
     {options.map((option) => (
       <div key={option.value} className="flex items-center mb-2">
@@ -107,16 +107,22 @@ const Register = () => {
   ];
 
   return (
-    <div className="flex w-full mx-auto items-center justify-center  min-h-screen bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="basis-1/2 bg-cover bg-center" style={{ backgroundImage: `linear-gradient(rgba(8,0,58,0.7), rgba(8,0,58,0.7)), url(${register_bg})` }} />
-        <div className="w-1/2 p-8">
+    <div className="flex w-full mx-auto items-center justify-center  min-h-screen bg-gray-100 rounded-md">
+      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden my-9">
+      <div className="hidden md:block md:w-1/2 bg-cover bg-center bg-no-repeat" 
+             style={{ 
+               backgroundImage: `linear-gradient(rgba(8,0,58,0.7), rgba(8,0,58,0.7)), url(${register_bg})`,
+               backgroundSize: 'cover',
+               backgroundPosition: 'center'
+             }} 
+        />        <div className="w-1/2 p-8">
           <h2 className="text-3xl font-bold mb-6 text-center">Register</h2>
           <form onSubmit={handleSubmit}>
             <FormInput
               label="Full Name"
               type="text"
               value={formData.fullName}
+              placeholder={"enter your Full name"}
               onChange={handleInputChange}
               name="fullName"
               required
@@ -125,6 +131,7 @@ const Register = () => {
               label="Email Address"
               type="email"
               value={formData.email}
+              placeholder={"Enter your email"}
               onChange={handleInputChange}
               name="email"
               required
@@ -133,12 +140,13 @@ const Register = () => {
               label="Phone Number"
               type="tel"
               value={formData.contactInfo}
+              placeholder={"Enter your contact info"}
               onChange={handleInputChange}
               name="contactInfo"
               required
             />
             <RadioGroup
-              label="Register as"
+              label="Register yourself as"
               options={[
                 { value: 'Delegate', label: 'Delegate' },
                 { value: 'Executive', label: 'Executive' },
@@ -226,6 +234,29 @@ const Register = () => {
                   name="paymentMethod"
                   required
                 />
+                {formData.paymentMethod === 'eSewa' && (
+                  <button onClick={() => {
+                    window.location.href = "https://esewa.com.np"
+                  }} className="my-4 w-full bg-green-500 hover:bg-green-600 transition duration-300 text-white py-2 px-4 rounded-md">
+                    Proceed with eSewa
+                  </button>
+                )}
+
+                {formData.paymentMethod === 'Khalti' && (
+                  <button onClick={() => {
+                    window.location.href = "https://khalti.com"
+                  }} className="my-4 w-full bg-purple-500 hover:bg-purple-600 transition duration-300 text-white py-2 px-4 rounded-md">
+                    Proceed with Khalti
+                  </button>
+                )}
+
+                {formData.paymentMethod === 'Bank Transfer' && (
+                  <button onClick={() => {
+                    window.location.href = "https://youtu.be/dQw4w9WgXcQ?si=Mc1j3oahvjrMepK7"
+                  }} className="my-4 w-full bg-blue-500 hover:bg-blue-600 transition duration-300 text-white py-2 px-4 rounded-md">
+                    Proceed with Bank Transfer
+                  </button>
+                )}
                 <div className="mb-4">
                   <label className="block text-gray-700 mb-2" htmlFor="transactionReceipt">Upload Transaction Receipt</label>
                   <input
