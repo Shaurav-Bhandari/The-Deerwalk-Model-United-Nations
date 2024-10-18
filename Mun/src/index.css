@@ -45,3 +45,17 @@ a:hover {
 
 }
 
+:root {
+  --nav-height: 0px; /* This will be set dynamically by the Navbar component */
+}
+
+/* Apply this class to your section headers or containers */
+.section-header {
+  padding-top: var(--nav-height);
+  margin-top: calc(-1 * var(--nav-height));
+}
+
+/* If you're using scroll-margin-top, you can do this instead: */
+.section-header {
+  scroll-margin-top: var(--nav-height);
+}

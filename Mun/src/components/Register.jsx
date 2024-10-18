@@ -80,6 +80,12 @@ const Register = () => {
     position: '',
     file: null,
   });
+  const [files, setFiles] = useState({
+    transactionReceipt: null,
+    cv: null,
+  });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,13 +93,59 @@ const Register = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, file: e.target.files[0] }));
+    const { name, files } = e.target;
+    const file = files[0];
+    
+    if (file) {
+      if (name === 'transactionReceipt' && !file.type.startsWith('image/')) {
+        setError('Transaction receipt must be an image file.');
+        return;
+      }
+      if (name === 'cv' && file.type !== 'application/pdf') {
+        setError('CV must be a PDF file.');
+        return;
+      }
+      setFiles((prev) => ({ ...prev, [name]: file }));
+      setError(''); // Clear any previous error
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement form submission logic here
-    console.log('Form submitted:', formData);
+    setError('');
+    setSuccess('');
+
+    const formDataToSend = new FormData();
+
+    // Append form data
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSend.append(key, value);
+    });
+
+    // Append files
+    Object.entries(files).forEach(([key, file]) => {
+      if (file) {
+        formDataToSend.append(key, file);
+      }
+    });
+
+    try {
+      const response = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      setSuccess('Registration successful!');
+      // Optionally, reset form or redirect user
+    } catch (err) {
+      setError(err.message || 'An error occurred during registration');
+    }
   };
 
   const committees = [
@@ -107,7 +159,7 @@ const Register = () => {
 
   return (
     <div className="flex w-full mx-auto items-center justify-center  min-h-screen bg-gray-100 rounded-md">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden my-9">
+      <div className="w-full max-w-7xl flex bg-white rounded-lg shadow-lg overflow-hidden my-9">
       <div className="hidden md:block md:w-1/2 bg-cover bg-center bg-no-repeat" 
              style={{ 
                backgroundImage: `linear-gradient(rgba(8,0,58,0.7), rgba(8,0,58,0.7)), url(${register_bg})`,
@@ -116,6 +168,8 @@ const Register = () => {
              }} 
         />        <div className="w-1/2 p-8">
           <h2 className="text-3xl font-bold mb-6 text-center">Register</h2>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {success && <p className="text-green-500 mb-4">{success}</p>}
           <form onSubmit={handleSubmit}>
             <FormInput
               label="Full Name"
