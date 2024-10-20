@@ -92,6 +92,7 @@ const Register = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     const file = files[0];
@@ -117,17 +118,18 @@ const Register = () => {
 
     const formDataToSend = new FormData();
 
-    // Append form data
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+    // Append all form fields
+    Object.keys(formData).forEach(key => {
+      formDataToSend.append(key, formData[key]);
     });
-
+    
     // Append files
-    Object.entries(files).forEach(([key, file]) => {
-      if (file) {
-        formDataToSend.append(key, file);
-      }
-    });
+    if (files.transactionReceipt) {
+      formDataToSend.append('transactionReceipt', files.transactionReceipt);
+    }
+    if (files.cv) {
+      formDataToSend.append('cv', files.cv);
+    }
 
     try {
       const response = await fetch('http://localhost:3000/api/register', {
@@ -350,6 +352,7 @@ const Register = () => {
                   <input
                     id="cv"
                     type="file"
+                    name='cv'
                     accept="application/pdf"
                     onChange={handleFileChange}
                     required
