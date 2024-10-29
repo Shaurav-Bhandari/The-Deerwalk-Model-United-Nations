@@ -1,8 +1,75 @@
 import { Admin } from "../models/admin.model.js";
-import { asyncHandler } from "../utils/asynchandler.js";
+import { Delegate } from "../models/Delegates.models.js";
+import { Executive } from "../models/Executives.models.js";
 import { ApiError } from "../utils/ApiError.js";
-import ApiResponse  from "../utils/ApiResponse.js";
-import mongoose from "mongoose";
+import ApiResponse from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asynchandler.js";
+
+const exportTableData = asyncHandler(async (req, res) => {
+    // Check if user is authenticated and is an admin
+    if (!req.admin || !["ADMIN", "SUPER_ADMIN"].includes(req.admin.role)) {
+        throw new ApiError(403, "Unauthorized access");
+    }
+
+    const { table } = req.params;
+    let data;
+    let sanitizedData;
+
+    try {
+        switch (table.toLowerCase()) {
+            case 'delegates':
+                data = await Delegate.find()
+                    .select('-__v')
+                    .lean();
+                sanitizedData = data.map(delegate => ({
+                    ...delegate,
+                    transactionRecipt: delegate.transactionRecipt ? 'Available' : 'Not Available'
+                }));
+                break;
+
+            case 'executives':
+                data = await Executive.find()
+                    .select('-__v')
+                    .lean();
+                sanitizedData = data.map(executive => ({
+                    ...executive,
+                    cv: executive.cv ? 'Available' : 'Not Available'
+                }));
+                break;
+
+            case 'admins':
+                // Only SUPER_ADMIN can view admin list
+                if (req.admin.role !== "SUPER_ADMIN") {
+                    throw new ApiError(403, "Unauthorized to view admin data");
+                }
+                data = await Admin.find()
+                    .select('-password -refreshToken -superAdminCode -__v')
+                    .lean();
+                sanitizedData = data;
+                break;
+
+            default:
+                throw new ApiError(400, "Invalid table specified");
+        }
+
+        // Add metadata to response
+        const responseData = {
+            data: sanitizedData,
+            totalCount: sanitizedData.length,
+            exportedAt: new Date().toISOString(),
+            exportedBy: req.admin.adminName
+        };
+
+        return res.status(200).json(
+            new ApiResponse(200, responseData, `${table} data exported successfully`)
+        );
+
+    } catch (error) {
+        throw new ApiError(500, `Error exporting ${table} data: ${error.message}`);
+    }
+});
+
+export { exportTableData };
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
@@ -63,7 +130,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
     }
 
     try {
-        // Find active admin with password
         const admin = await Admin.findActiveAdmin(adminEmail.toLowerCase());
         
         if (!admin) {
@@ -75,15 +141,8 @@ const loginAdmin = asyncHandler(async (req, res) => {
             throw new ApiError(401, "Invalid credentials");
         }
 
-        // Generate tokens
-        let accessToken, refreshToken;
-        try {
-            accessToken = admin.generateAccessToken();
-            refreshToken = admin.generateRefreshToken();
-        } catch (tokenError) {
-            console.error("Token generation error:", tokenError);
-            throw new ApiError(500, "Error during authentication. Please contact support.");
-        }
+        const accessToken = admin.generateAccessToken();
+        const refreshToken = admin.generateRefreshToken();
 
         // Update refresh token in database
         await Admin.findByIdAndUpdate(
@@ -100,6 +159,15 @@ const loginAdmin = asyncHandler(async (req, res) => {
             role: admin.role
         };
 
+        // Ensure cookie options are properly set for your environment
+        const COOKIE_OPTIONS = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Only use secure in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            path: '/',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        };
+
         // Set cookies and send response
         return res
             .status(200)
@@ -108,7 +176,11 @@ const loginAdmin = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(
                     200,
-                    { admin: sanitizedAdmin, accessToken, refreshToken },
+                    { 
+                        admin: sanitizedAdmin,
+                        accessToken, // Include tokens in response body for local storage backup
+                        refreshToken 
+                    },
                     "Login successful"
                 )
             );
@@ -118,6 +190,76 @@ const loginAdmin = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Error during login process");
     }
 });
+
+// 2. Then, modify the AdminDashboard.jsx component to handle authentication more robustly
+
+// Add this utility function at the top of AdminDashboard.jsx
+const getAuthToken = () => {
+    // Try getting token from cookie first
+    const cookieToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('accessToken='))
+        ?.split('=')[1];
+
+    if (cookieToken) {
+        return cookieToken;
+    }
+
+    // Fallback to localStorage if cookie is not available
+    const adminData = JSON.parse(localStorage.getItem('adminData'));
+    return adminData?.accessToken;
+};
+
+// Update the fetch functions to use the new getAuthToken utility
+const fetchRegistrationData = async (table) => {
+    try {
+        setLoading(true);
+        setError('');
+        
+        const accessToken = getAuthToken();
+
+        if (!accessToken) {
+            // Redirect to login if no token is found
+            window.location.href = '/login';
+            throw new Error('No access token found. Please log in again.');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/v1/data/table/${table}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            credentials: 'include'
+        });
+        
+        if (response.status === 401) {
+            // Handle unauthorized access
+            window.location.href = '/login';
+            throw new Error('Session expired. Please log in again.');
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Failed to fetch ${table} data: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data || !data.data) {
+            throw new Error('Invalid data format received from server');
+        }
+
+        setRegistrationData(data.data);
+        setActiveDataTab(table);
+    } catch (err) {
+        console.error('Fetch error:', err);
+        setError(err.message || `Error fetching ${table} data. Please try again.`);
+        setRegistrationData([]);
+    } finally {
+        setLoading(false);
+    }
+};
 
 const removeAdmin = asyncHandler(async (req, res) => {
     // Validate super admin access
@@ -162,8 +304,24 @@ const removeAdmin = asyncHandler(async (req, res) => {
     );
 });
 
+const listAdmins = asyncHandler(async (req, res) => {
+    try {
+        const admins = await Admin.find()
+            .select('-password -refreshToken -superAdminCode')
+            .sort({ role: 1, adminName: 1 });
+
+        return res.status(200).json(
+            new ApiResponse(200, admins, "Admins fetched successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, "Error fetching admins");
+    }
+});
+
+// Update the exports in admin.controller.js
 export {
     registerAdmin,
     loginAdmin,
-    removeAdmin
+    removeAdmin,
+    listAdmins
 };

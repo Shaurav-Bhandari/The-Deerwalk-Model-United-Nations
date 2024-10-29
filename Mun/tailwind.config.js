@@ -1,24 +1,38 @@
 /** @type {import('tailwindcss').Config} */
-
 import plugin from "tailwindcss/plugin.js";
+
 export default {
+  darkMode: ["class"],
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx,ts,tsx}"
   ],
+  prefix: "",
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        color : {
-          'royal-blue' : '#4169e1',
-          'white' : '#ffffff',
-          'gold' : '#ffd700',
+        // Custom color palette
+        color: {
+          'royal-blue': '#4169e1',
+          'white': '#ffffff',
+          'gold': '#ffd700',
           '4': '#F0F8FF',
-          'title' : '#212Ea0',
-          'tcol' : '#000f38',
-          'pcol' : "#676767",
-          'form-col' : '#EBECFE'
+          'title': '#212Ea0',
+          'tcol': '#000f38',
+          'pcol': "#676767",
+          'form-col': '#EBECFE'
         },
-        n:{
+        // Numbered colors
+        n: {
           1: "#FFFFFF",
           2: "#CAC6DD",
           3: "#ADA8C3",
@@ -32,16 +46,68 @@ export default {
           11: "#1B1B2E",
           12: "#2E2A41",
           13: "#6C7275",
-          15 : "#000000"
-        }
-      }
+          15: "#000000"
+        },
+        // Semantic colors
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
   plugins: [
     plugin(function ({ addBase, addComponents, addUtilities }) {
       addBase({});
       addComponents({
-
         ".h1": {
           "@apply font-semibold text-[2.5rem] leading-[3.25rem] md:text-[2.75rem] md:leading-[3.75rem] lg:text-[3.25rem] lg:leading-[4.0625rem] xl:text-[3.75rem] xl:leading-[4.5rem]": {},
         },
@@ -82,5 +148,6 @@ export default {
         },
       });
     }),
+    require("tailwindcss-animate")
   ],
 };

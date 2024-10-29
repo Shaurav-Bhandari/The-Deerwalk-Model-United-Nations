@@ -1,6 +1,6 @@
 import Home from './components/home';
 import { Routes, Route } from 'react-router-dom';
-import Register  from './components/register';
+import Register  from './pages/Register';
 const App = () => {
     return(
         <>

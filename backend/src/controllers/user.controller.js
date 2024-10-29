@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asynchandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/Users.models.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import registerDelegate from "./delegate.controller.js";
+import { registerDelegate } from "./delegate.controller.js";
 import registerExecutive from "./Executive.controller.js";
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -39,6 +39,10 @@ const registerUser = asyncHandler(async (req, res) => {
         req.user = user;
         
         if (role === "Delegate") {
+            // Check if required files exist for delegate
+            if (!req.files?.transactionReceipt) {
+                throw new ApiError(400, "Transaction receipt is required for delegate registration");
+            }
             registeredData = await registerDelegate(req, res);
             return res.status(201).json(
                 new ApiResponse(200, {
@@ -49,6 +53,10 @@ const registerUser = asyncHandler(async (req, res) => {
         }
         
         if (role === "Executive") {
+            // Check if required files exist for executive
+            if (!req.files?.cv) {
+                throw new ApiError(400, "CV is required for executive registration");
+            }
             registeredData = await registerExecutive(req, res);
             return res.status(201).json(
                 new ApiResponse(200, {

@@ -1,10 +1,26 @@
+// Delegate.models.js
 import mongoose from "mongoose";
 
 const DelegateSchema = new mongoose.Schema(
     {
         user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+                required: true
+            },
+            fullName: {
+                type: String,
+                required: true
+            },
+            email: {
+                type: String,
+                required: true
+            },
+            contact: {
+                type: Number,
+                required: true
+            }
         },
         institute: {
             type: String,
@@ -38,7 +54,7 @@ const DelegateSchema = new mongoose.Schema(
             enum: ["Vegetarian", "Non-Vegetarian"],
             required: true,
         },
-        paymentMethod : {
+        paymentMethod: {
             type: String,
             enum: ["eSewa", "Khalti", "Bank Transfer"],
             required: true,
@@ -48,7 +64,12 @@ const DelegateSchema = new mongoose.Schema(
             unique: true,
             required: true,
         }
-    }, {timestamps: true}
+    }, 
+    {
+        timestamps: true
+    }
 );
 
 export const Delegate = mongoose.model("Delegate", DelegateSchema);
+
+// User.models.js remains unchanged

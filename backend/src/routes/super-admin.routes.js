@@ -11,5 +11,6 @@ const router = Router();
 router.post('/initialize', initializeSuperAdmin);
 router.post('/transfer', verifyJWT, transferSuperAdminRole);
 router.post('/update-code', verifyJWT, updateSuperAdminCode);
+// router.get('/admin/list', verifyToken, listAdmins);
 
 export default router;

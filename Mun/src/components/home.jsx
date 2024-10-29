@@ -4,7 +4,6 @@ import About from './About';
 import Objectives from './Objectives';
 import Footer from './footer';
 import Contact from './contact';
-import Register from './register';
 const home = () => {
   return (
     <div>
@@ -13,7 +12,6 @@ const home = () => {
         <About />
         <Objectives />
         <Contact />
-        <Register />
         <Footer />
     </div>
   )
