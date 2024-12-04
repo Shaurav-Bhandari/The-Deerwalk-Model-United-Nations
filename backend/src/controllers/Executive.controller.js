@@ -27,9 +27,9 @@ const registerExecutive = asyncHandler(async (req, res) => {
     
 
     const executive = await Executive.create({
-        user,
-        committee,
-        position,
+        user: req.user_id,
+        committee: req.committee,
+        position: req.position,
         cv: cv.url, // Use the uploaded URL from Cloudinary
     });
 

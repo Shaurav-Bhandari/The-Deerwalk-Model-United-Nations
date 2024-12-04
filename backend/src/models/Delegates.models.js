@@ -4,23 +4,12 @@ import mongoose from "mongoose";
 const DelegateSchema = new mongoose.Schema(
     {
         user: {
-            _id: {
+            
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User",
                 required: true
-            },
-            fullName: {
-                type: String,
-                required: true
-            },
-            email: {
-                type: String,
-                required: true
-            },
-            contact: {
-                type: Number,
-                required: true
-            }
+            
+            
         },
         institute: {
             type: String,
@@ -59,7 +48,7 @@ const DelegateSchema = new mongoose.Schema(
             enum: ["eSewa", "Khalti", "Bank Transfer"],
             required: true,
         },
-        transactionRecipt: {
+        transactionReceipt: {
             type: String, //Cloudinary url
             unique: true,
             required: true,
