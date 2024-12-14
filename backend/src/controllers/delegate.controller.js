@@ -24,15 +24,16 @@ const registerDelegate = asyncHandler(async (req, res) => {
     const transactionReceipt = await uploadOnCLoud(transactionReceiptLocalPath);
     
     const delegate = await Delegate.create({
-        institute,
-        address, 
-        grade, 
-        munExperience, 
-        primaryCommittee, 
-        secondaryCommittee, 
-        foodPreference, 
-        paymentMethod,
-        transactionReceipt: transactionReceipt.url, // Update field name here too
+        user: req.user._id, // Ensure this is being set
+    institute: req.body.institute,
+    address: req.body.address,
+    grade: req.body.grade,
+    munExperience: req.body.munExperience,
+    primaryCommittee: req.body.primaryCommittee,
+    secondaryCommittee: req.body.secondaryCommittee,
+    foodPreference: req.body.foodPreference,
+    paymentMethod: req.body.paymentMethod,
+    transactionReceipt: req.files.transactionReceipt[0].path // Update field name here too
     });
 
     if (!delegate) {
