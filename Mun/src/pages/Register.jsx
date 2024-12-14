@@ -79,17 +79,23 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showError('');
+    showSuccess('');
 
     const formDataToSend = new FormData();
+
+    // Append all form fields
     Object.keys(formData).forEach(key => {
       formDataToSend.append(key, formData[key]);
     });
     
-    Object.keys(files).forEach(key => {
-      if (files[key]) {
-        formDataToSend.append(key, files[key]);
-      }
-    });
+    // Append files
+    if (files.transactionReceipt) {
+      formDataToSend.append('transactionReceipt', files.transactionReceipt);
+    }
+    if (files.cv) {
+      formDataToSend.append('cv', files.cv);
+    }
 
     try {
       const response = await fetch('http://localhost:3000/api/v1/users/register', {
@@ -100,12 +106,12 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed. Check your credentials again.');
+        throw new Error(data.error || 'Registration failed');
       }
 
-      showSuccess('Registration completed. You will receive an email after the payment is verified.');
+      showSuccess('Registration successful!');
       resetForm();
-      
+      // Optionally, reset form or redirect user
     } catch (err) {
       showError(err.message || 'An error occurred during registration');
     }
@@ -126,6 +132,7 @@ const Register = () => {
       foodPreference: '',
       paymentMethod: '',
       position: '',
+      committee: '',
     });
     setFiles({
       transactionReceipt: null,
