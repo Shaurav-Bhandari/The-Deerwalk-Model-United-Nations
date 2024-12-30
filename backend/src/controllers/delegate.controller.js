@@ -2,55 +2,76 @@ import { Delegate } from "../models/Delegates.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asynchandler.js";
 import { uploadOnCLoud } from "../utils/fileUpload.js";
-import ApiResponse  from "../utils/ApiResponse.js"
-
+import ApiResponse  from "../utils/ApiResponse.js";
 
 const registerDelegate = asyncHandler(async (req, res) => {
-    const { institute, address, grade, munExperience, primaryCommittee, secondaryCommittee, foodPreference, paymentMethod } = req.body;
-    if ([institute, address, grade, munExperience, primaryCommittee, secondaryCommittee, foodPreference, paymentMethod].some((field) => field?.trim() === ""))
+    const {
+        institute,
+        address,
+        grade,
+        munExperience,
+        primaryCommittee,
+        secondaryCommittee,
+        foodPreference,
+        paymentMethod
+    } = req.body;
+
+    // Validation
+    if (
+        [
+            institute,
+            address,
+            grade,
+            munExperience,
+            primaryCommittee,
+            secondaryCommittee,
+            foodPreference,
+            paymentMethod
+        ].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    // Check for transaction receipt
+    let transactionReceiptLocalPath;
+    if (req.files && Array.isArray(req.files.transactionReceipt) && req.files.transactionReceipt.length > 0){
+        transactionReceiptLocalPath = req.files.transactionReceipt[0].path;
+    }
+    if (!transactionReceiptLocalPath) {
+        throw new ApiError(400, "Transaction Receipt is required");
+    }
+
+    // Upload to cloudinary
+    let transactionReceipt;
+    try {
+        transactionReceipt = await uploadOnCLoud(transactionReceiptLocalPath);
+        if (!transactionReceipt){return next(new ApiError(500, "file upload fail."));}
+    }
+    catch
     {
-        throw new ApiError(400, "All fields are required!");
+        return next(new ApiError(500, "file upload fail"));
     }
 
-    // Update the field name to match frontend
-    const transactionReceiptLocalPath = req.files?.transactionReceipt[0]?.path;
-    if (!req.files?.transactionReceipt?.[0]) {
-        throw new ApiError(
-            409,
-            "Transaction Receipt not found..."
-        );
-    }
-    
-    const transactionReceipt = await uploadOnCLoud(transactionReceiptLocalPath);
-    
-    const delegate = await Delegate.create({
-        user: req.user._id, // Ensure this is being set
-    institute: req.body.institute,
-    address: req.body.address,
-    grade: req.body.grade,
-    munExperience: req.body.munExperience,
-    primaryCommittee: req.body.primaryCommittee,
-    secondaryCommittee: req.body.secondaryCommittee,
-    foodPreference: req.body.foodPreference,
-    paymentMethod: req.body.paymentMethod,
-    transactionReceipt: req.files.transactionReceipt[0].path // Update field name here too
+    // Create delegate entry in db
+    const createdDelegate = await Delegate.create({
+        user: req.user._id,
+        institute,
+        address,
+        grade,
+        munExperience,
+        primaryCommittee,
+        secondaryCommittee,
+        foodPreference,
+        paymentMethod,
+        transactionReceipt: transactionReceipt.url,
     });
 
-    if (!delegate) {
-        throw new ApiError(500, "Internal Server Error");
+    if (!createdDelegate) {
+        throw new ApiError(500, "Something went wrong while registering the delegate");
     }
-    
-    return delegate;
-});
-const getAllDelegates = asyncHandler(async (req, res) => {
-    const delegates = await Delegate.find();
-    
-    return res.status(200).json({
-        success: true,
-        data: delegates,
-        totalCount: delegates.length
-    });
+
+    return Delegate;
 });
 
-export { registerDelegate, getAllDelegates };
 
+export { registerDelegate };

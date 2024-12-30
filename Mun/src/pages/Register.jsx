@@ -39,9 +39,11 @@ const Register = () => {
     isSuccess: true,
   });
 
-  const handleInputChange = (e) => {
+    const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // For debugging
+    console.log(`Changed ${name} to:`, value);
   };
 
   const handleFileChange = (e) => {
@@ -98,7 +100,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/v1/users/register', {
+      const response = await fetch('http://localhost:8000/api/v1/users/register', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -319,11 +321,22 @@ const Register = () => {
                 <SelectInput
                   label="Select your preferred Committee"
                   options={committees}
-                  value={formData.primaryCommittee}
+                  value={formData.committee}
                   onChange={handleInputChange}
-                  name="primaryCommittee"
+                  name="committee"
                   required
                 />
+                 {formData.committee === 'other' && (
+          <FormInput
+            label="Specify your preferred committee"
+            type="text"
+            value={formData.otherCommittee}
+            onChange={handleInputChange}
+            name="otherCommittee"
+            placeholder="Enter your preferred committee"
+            required
+          />
+        )}
 
                 <SelectInput
                   label="Select your preferred Position"
