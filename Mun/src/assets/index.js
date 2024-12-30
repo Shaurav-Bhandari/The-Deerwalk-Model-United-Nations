@@ -8,7 +8,7 @@ import Excellence from './Excellence.svg';
 import success from './success.svg';
 import book from './book.svg';
 import register_bg from './register_bg.jpg';
-
+import thumbnail from './thumbnail.jpg'
 export {
     Logo,
     dark_arrow,
@@ -19,5 +19,6 @@ export {
     Excellence,
     success,
     book,
-    register_bg
+    register_bg,
+    thumbnail
 };
