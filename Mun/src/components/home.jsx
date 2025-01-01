@@ -1,4 +1,5 @@
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
+import Header from './Header';
 import Hero from './Hero';
 import About from './About';
 import Objectives from './Objectives';
@@ -7,7 +8,8 @@ import Contact from './contact';
 const home = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
+      <Header/>
         <Hero />
         <About />
         <Objectives />

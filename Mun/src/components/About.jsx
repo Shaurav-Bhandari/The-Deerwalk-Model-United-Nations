@@ -37,39 +37,39 @@ const About = () => {
             </div>
           </div>
 
-          <div className="w-3/4 mx-auto rounded-lg shadow-xl bg-gray-100">
-            <div className="relative w-full aspect-w-16 aspect-h-9">
-            <h2 className="font-bold text-3xl text-color-tcol my-2">Previous Year Highlights.</h2>
-              {showVideo ? (
-                <iframe
-                  className="w-full aspect-video rounded-lg"
-                  src="https://www.youtube.com/embed/w1tAbveC6w0?autoplay=1"
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <>
-                  <img 
+          <div className="w-full md:w-3/4 mx-auto rounded-lg shadow-xl bg-gray-100 px-4 sm:px-6">
+    <div className="relative w-full aspect-w-16 aspect-h-9">
+        <h2 className="font-bold text-3xl md:text-4xl text-color-tcol my-4 text-center">Previous Year Highlights</h2>
+        {showVideo ? (
+            <iframe
+                className="w-full aspect-video rounded-lg min-h-[300px] md:min-h-[400px]"
+                src="https://www.youtube.com/embed/w1tAbveC6w0?autoplay=1"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+            />
+        ) : (
+            <>
+                <img 
                     src={thumbnail}
                     alt="Video Thumbnail" 
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
+                    className="w-full h-full object-cover rounded-lg min-h-[300px] md:min-h-[400px]"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
                     <button 
-                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 transition duration-300 ease-in-out transform hover:scale-110"
-                      onClick={() => setShowVideo(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 transition duration-300 ease-in-out transform hover:scale-110"
+                        onClick={() => setShowVideo(true)}
                     >
-                      <FaPlay size={24} />
+                        <FaPlay size={24} />
                     </button>
-                  </div>
-                </>
-              )}
-            </div>
+                </div>
+            </>
+        )}
+    </div>
+</div>
           </div>
         </div>
-      </div>
     </>
   );
 };
